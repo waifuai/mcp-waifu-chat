@@ -1,0 +1,43 @@
+[project]
+name = "mcp-waifu-chat"
+version = "0.1.0"
+description = "An MCP server for a conversational AI waifu character."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "Flask>=2.0",
+    "python-dotenv>=0.19",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "requests>=2.25",
+    "gunicorn>=20.1",
+    "anyio>=4.3",
+    "sqlite3>=2.6.0",
+    "mcp>=1.1.0" # Add the mcp dependency!!
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  ".",
+  "src",
+]
+testpaths = ["tests"]
+addopts = "--cov=mcp_waifu_chat --cov-report term-missing"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "C", "N", "B", "SIM", "TCH", "RUF"]
+ignore = ["E501"]  # You can ignore specific rules if needed
