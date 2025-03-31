@@ -1,6 +1,6 @@
 import pytest
 
-from mcp_waifu_api.db import (
+from mcp_waifu_chat.db import (
     add_user_to_db,
     create_tables,
     delete_user_from_db,
@@ -15,7 +15,7 @@ from mcp_waifu_api.db import (
     reset_user_chat,
     update_user_dialog,
 )
-from mcp_waifu_api.config import Config
+from mcp_waifu_chat.config import Config
 
 
 @pytest.fixture

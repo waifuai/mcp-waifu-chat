@@ -2,11 +2,6 @@ import re
 from typing import Any, Optional
 
 
-def get_current_user(headers: dict) -> str:
-    """Extracts the 'current-user' from headers, providing a default if not found."""
-    return headers.get("current-user", "0_no_current_user_specified")
-
-
 def dialog_to_json(dialog: str) -> list[dict[str, Any]]:
     """Converts a dialog string to a JSON object.
 
