@@ -1,4 +1,4 @@
-[project]
+<![CDATA[[project]
 name = "mcp-waifu-chat"
 version = "0.1.0"
 description = "An MCP server for a conversational AI waifu character."
@@ -12,7 +12,8 @@ dependencies = [
    "httpx>=0.27",  # Replace requests with httpx
    "gunicorn>=20.1",
    "anyio>=4.3",
-    "mcp>=1.1.0" # Add the mcp dependency!!
+    "mcp>=1.1.0", # Add the mcp dependency!! <-- Added comma here
+    "google-generativeai>=0.4.0", # Add Gemini client library
 ]
 
 [project.optional-dependencies]
@@ -44,3 +45,4 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "C", "N", "B", "SIM", "TCH", "RUF"]
 ignore = ["E501"]  # You can ignore specific rules if needed
+]]>
