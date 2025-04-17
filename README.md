@@ -1,4 +1,4 @@
-<![CDATA[# MCP Waifu Chat Server
+# MCP Waifu Chat Server
 
 This project implements a basic MCP (Model Context Protocol) server for a conversational AI "waifu" character. It uses the `mcp` library for Python to handle the protocol details and `FastMCP` for easy server setup.
 
@@ -174,4 +174,3 @@ For a production deployment, you should:
 *  **`run.py`:**: Simple file to run the server (Note: `uv run mcp-waifu-chat` is preferred).
 
 This structure promotes modularity, testability, and maintainability. Each module has a specific responsibility, making it easier to understand, modify, and extend the codebase.
-]]>
