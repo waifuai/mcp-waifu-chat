@@ -67,14 +67,14 @@ DATABASE_FILE=dialogs.db
 DEFAULT_RESPONSE="I'm sorry, I'm having trouble connecting to the AI model."
 DEFAULT_GENRE="Fantasy"
 FLASK_PORT=5000
-GEMINI_MODEL_NAME=gemini-2.5-flash-preview-04-17
+GEMINI_MODEL_NAME=gemini-2.5-pro-preview-03-25
 ```
 
 *   `DATABASE_FILE`: Path to the SQLite database file (default: `dialogs.db`).
 *   `DEFAULT_RESPONSE`: The default response to send when the AI model is unavailable (default: "The AI model is currently unavailable. Please try again later.").
 *   `DEFAULT_GENRE`: The default conversation genre (default: "Romance").
 *   `FLASK_PORT`: The port the server will listen on (default: 5000).
-*   `GEMINI_MODEL_NAME`: The specific Gemini model to use (default: `gemini-2.5-flash-preview-04-17`).
+*   `GEMINI_MODEL_NAME`: The specific Gemini model to use (default: `gemini-2.5-pro-preview-03-25`).
 
 Copy `.env.example` to `.env` and customize the values as needed (except for the API key, which is read from `~/.api-gemini`).
 
