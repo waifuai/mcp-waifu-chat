@@ -1,109 +1,111 @@
-<![CDATA[import logging
+import logging
 import os
 from pathlib import Path
-import google.generativeai as genai
-from google.api_core import exceptions as google_exceptions # For specific Google API errors
 
+from google import genai
 from .config import Config
-# Removed unused import: from .utils import dialog_to_json
 
 logger = logging.getLogger(__name__)
 
-# Store the API key globally after reading it once to avoid repeated file access
-_GEMINI_API_KEY = None
+# Cache API key to avoid repeated IO
+_GEMINI_API_KEY: str | None = None
+_CLIENT: genai.Client | None = None
+
+
+def _read_key_file() -> str | None:
+    """Read API key from ~/.api-gemini if present and non-empty."""
+    try:
+        key_path = Path.home() / ".api-gemini"
+        key = key_path.read_text().strip()
+        if not key:
+            logger.error(f"API key file found at {key_path}, but it is empty.")
+            return None
+        return key
+    except FileNotFoundError:
+        return None
+    except Exception as e:
+        logger.exception(f"Unexpected error while reading ~/.api-gemini: {e}")
+        return None
+
 
 def _get_api_key() -> str | None:
-    """Reads the Gemini API key from ~/.api-gemini."""
+    """Resolve API key with env var precedence, then fallback to ~/.api-gemini."""
     global _GEMINI_API_KEY
     if _GEMINI_API_KEY is not None:
         return _GEMINI_API_KEY
 
-    try:
-        api_key_path = Path.home() / ".api-gemini"
-        _GEMINI_API_KEY = api_key_path.read_text().strip()
-        if not _GEMINI_API_KEY:
-             logger.error(f"API key file found at {api_key_path}, but it is empty.")
-             _GEMINI_API_KEY = None # Ensure it's None if empty
+    # Prefer environment variables
+    env_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if env_key:
+        _GEMINI_API_KEY = env_key.strip()
         return _GEMINI_API_KEY
-    except FileNotFoundError:
-        logger.error(f"Gemini API key file not found at ~/.api-gemini")
+
+    # Fallback to file
+    file_key = _read_key_file()
+    if file_key:
+        _GEMINI_API_KEY = file_key
+        return _GEMINI_API_KEY
+
+    logger.error("No Gemini API key found in GEMINI_API_KEY/GOOGLE_API_KEY or ~/.api-gemini")
+    return None
+
+
+def _get_client() -> genai.Client | None:
+    """Create or return a cached genai.Client."""
+    global _CLIENT
+    if _CLIENT is not None:
+        return _CLIENT
+    api_key = _get_api_key()
+    if not api_key:
         return None
+    try:
+        _CLIENT = genai.Client(api_key=api_key)
+        return _CLIENT
     except Exception as e:
-        logger.exception(f"An unexpected error occurred while reading the API key: {e}")
+        logger.exception(f"Failed to construct Google GenAI client: {e}")
         return None
 
 
 async def generate_response(prompt: str, config: Config) -> str:
     """
-    Generates a response from the configured Gemini model.
-
-    Args:
-        prompt: The prompt to send to the AI model.
-        config: The application configuration containing the model name.
-
-    Returns:
-        The AI model's response, or a default error message if the model is unavailable
-        or an error occurs.
+    Generates a response from the configured Gemini model using google-genai Client.
     """
-    api_key = _get_api_key()
-    if not api_key:
-        # Error already logged in _get_api_key
+    client = _get_client()
+    if client is None:
         return config.default_response
 
     try:
-        # Configure the genai library (safe to call multiple times)
-        genai.configure(api_key=api_key)
+        # google-genai Client API
+        resp = client.models.generate_content(
+            model=config.gemini_model_name,
+            contents=prompt,
+        )
 
-        # Initialize the model specified in the config
-        model = genai.GenerativeModel(config.gemini_model_name)
+        # Try to use text property if available
+        try:
+            text = getattr(resp, "text", None)
+        except Exception:
+            text = None
 
-        # Generate content (synchronous call, FastMCP should handle threading)
-        # Consider adding safety settings if needed:
-        # safety_settings = [
-        #     {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-        #     # ... other categories
-        # ]
-        # response = model.generate_content(prompt, safety_settings=safety_settings)
-        response = model.generate_content(prompt)
+        if text:
+            return text
 
-        # Check for blocked prompt or other generation issues
-        if response.prompt_feedback.block_reason:
-            logger.warning(
-                f"Gemini prompt blocked for user. Reason: {response.prompt_feedback.block_reason}"
-            )
-            # Consider returning a more specific message or just the default
-            return f"My safety filters blocked the prompt. Reason: {response.prompt_feedback.block_reason}"
+        # Defensive fallback if text not available; attempt to extract from candidates
+        try:
+            candidates = getattr(resp, "candidates", None) or []
+            for c in candidates:
+                parts = getattr(c, "content", None)
+                if parts and hasattr(parts, "parts"):
+                    for p in parts.parts:
+                        if hasattr(p, "text") and p.text:
+                            return p.text
+        except Exception:
+            pass
 
-        if not response.candidates or response.candidates[0].finish_reason != 'STOP':
-             finish_reason = response.candidates[0].finish_reason if response.candidates else "UNKNOWN"
-             logger.warning(
-                 f"Gemini generation finished unexpectedly. Reason: {finish_reason}"
-             )
-             # Decide if this warrants the default response or returning partial text if available
-             # return config.default_response # Option 1: Default response
-             try:
-                 # Option 2: Try to return text even if finish reason wasn't STOP
-                 return response.text
-             except ValueError: # Handle case where response.text is not available
-                 logger.error("Could not extract text from Gemini response despite unexpected finish reason.")
-                 return config.default_response
-
-
-        # Successfully generated text
-        return response.text
-
-    except google_exceptions.PermissionDenied as e:
-         logger.error(f"Gemini API permission denied. Check API key and model access: {e}")
-         return config.default_response
-    except google_exceptions.ResourceExhausted as e:
-        logger.error(f"Gemini API quota exceeded: {e}")
-        return "The AI model is currently overloaded. Please try again later."
-    except google_exceptions.GoogleAPIError as e:
-        # Catch other specific Google API errors
-        logger.error(f"A Google API error occurred: {e}")
+        logger.warning("GenAI response did not contain text; returning default response.")
         return config.default_response
+
     except Exception as e:
-        # Catch any other unexpected errors during the API call or processing
-        logger.exception(f"An unexpected error occurred while contacting the Gemini model: {e}")
+        # Broad catch to keep behavior stable across SDK changes
+        logger.exception(f"Unexpected error from Google GenAI: {e}")
         return config.default_response
-]]>

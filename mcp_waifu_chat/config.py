@@ -23,10 +23,10 @@ class Config(BaseSettings):
     )
     flask_port: int = Field(
         default=5000, description="Port number on which the Flask app will run."
+    )
     gemini_model_name: str = Field(
         default="gemini-2.5-pro",
-        description="The specific Gemini model to use (e.g., gemini-2.5-pro)."
-    )
+        description="The specific Gemini model to use (e.g., gemini-2.5-pro).",
     )
     # Add model_url to config
     model_url: str = Field(default="http://example.com", description="ai model url")
