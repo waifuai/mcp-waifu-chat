@@ -1,3 +1,23 @@
+"""
+Utility functions for the MCP Waifu Chat Server.
+
+This module provides helper functions for data transformation and validation:
+
+Key Functions:
+- dialog_to_json(): Converts dialog strings to structured JSON format
+- json_to_dialog(): Converts JSON dialog data back to string format
+
+Features:
+- Robust parsing of dialog strings with regex pattern matching
+- Error handling for malformed data
+- JSON serialization/deserialization
+- Data validation and sanitization
+- Support for empty and malformed input handling
+
+These utilities are used throughout the application for converting between
+different dialog data formats and ensuring data consistency.
+"""
+
 import re
 from typing import Any, Optional
 

@@ -1,3 +1,23 @@
+"""
+Database operation tests for the MCP Waifu Chat Server.
+
+This module comprehensively tests all database functionality:
+
+Test Coverage:
+- Table creation and schema management
+- User management operations (CRUD)
+- Dialog storage and retrieval
+- Dialog updates and resets
+- User existence checking
+- User counting and listing
+- Pagination functionality
+- Metadata tracking (timestamps, modification history)
+- Error handling and edge cases
+
+All tests use isolated database instances to ensure test independence
+and proper cleanup between test runs.
+"""
+
 import pytest
 
 from mcp_waifu_chat.db import (

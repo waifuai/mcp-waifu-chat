@@ -1,3 +1,20 @@
+"""
+FastMCP server implementation for the MCP Waifu Chat Server.
+
+This module defines the main FastMCP application and implements all the MCP tools
+and resources for the waifu chat server. It handles:
+
+- Server initialization and configuration
+- User management tools (create, check, delete, count)
+- Dialog management tools (get, set, reset)
+- Chat functionality with AI provider integration
+- Request context handling for multi-user support
+- Database initialization and connection management
+
+The server uses FastMCP for automatic MCP protocol compliance and provides
+a clean, extensible API for waifu character interactions.
+"""
+
 import logging
 
 from mcp.server.fastmcp import FastMCP

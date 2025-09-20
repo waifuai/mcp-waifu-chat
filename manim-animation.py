@@ -1,3 +1,17 @@
+"""
+Manim animation script for visualizing the MCP Waifu Chat Server architecture and data flow.
+
+This script creates a comprehensive animated explanation of the system, including:
+- System architecture with layered components
+- Data flow through the 7-step message processing pipeline
+- AI provider system with OpenRouter and Gemini integration
+- Database system with SQLite schema visualization
+- Configuration system with priority-based loading
+
+The animation is designed for educational and presentation purposes, showing how
+different components interact within the MCP Waifu Chat Server ecosystem.
+"""
+
 from manim import *
 import numpy as np
 

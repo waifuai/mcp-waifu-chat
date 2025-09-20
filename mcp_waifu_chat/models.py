@@ -1,3 +1,25 @@
+"""
+Pydantic data models for the MCP Waifu Chat Server.
+
+This module defines all the data structures used throughout the application
+with comprehensive validation, serialization, and documentation:
+
+Model Categories:
+- User models (User, UserExists, UserMetadata)
+- Dialog models (DialogEntry, UserDialogJson, UserDialogStr)
+- Utility models (UserCount, UserList, ServerStatus)
+- Chat models (ChatRequest, ChatResponse, ChatFormRequest)
+- Configuration models (ModelUrl, ModelUrlResponse)
+
+Features:
+- Comprehensive field validation with Pydantic
+- Detailed field descriptions for API documentation
+- Model validators for complex validation logic
+- Type hints for better IDE support and type checking
+- JSON serialization compatibility
+- Request/response model separation
+"""
+
 from typing import Any
 
 from pydantic import (

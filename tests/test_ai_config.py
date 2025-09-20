@@ -1,3 +1,20 @@
+"""
+Tests for AI configuration and provider resolution in the MCP Waifu Chat Server.
+
+This module tests the configuration loading and AI provider setup functionality:
+
+Test Coverage:
+- Default provider selection and environment overrides
+- Model name resolution precedence (env vars, dotfiles, defaults)
+- OpenRouter model configuration
+- Gemini model configuration
+- API key resolution logic
+- Configuration caching and reloading
+
+These tests ensure that the configuration system correctly handles various
+input sources and provides reliable fallbacks for production deployments.
+"""
+
 import os
 from pathlib import Path
 

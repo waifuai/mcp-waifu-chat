@@ -1,3 +1,19 @@
+"""
+Tests for OpenRouter API key resolution functionality.
+
+This module specifically tests the OpenRouter API key resolution logic:
+
+Test Coverage:
+- Environment variable precedence
+- Dotfile fallback mechanism
+- Module reloading and cache behavior
+- API key resolution function behavior
+- Error handling for missing keys
+
+These tests ensure that OpenRouter API key resolution works correctly
+in various deployment scenarios and configurations.
+"""
+
 from importlib import reload
 from pathlib import Path
 

@@ -1,3 +1,18 @@
+"""
+AI provider integration module for the MCP Waifu Chat Server.
+
+This module handles communication with external AI providers, currently supporting:
+- OpenRouter (default): HTTP-based chat completions API
+- Google Gemini: Google GenAI SDK client with fallback support
+
+The module includes:
+- API key resolution from environment variables and dotfiles
+- Caching mechanisms for clients and credentials
+- Unified interface for generating responses
+- Robust error handling and fallback mechanisms
+- Timeout and retry logic for external API calls
+"""
+
 import logging
 import os
 from pathlib import Path

@@ -1,3 +1,24 @@
+"""
+Configuration management for the MCP Waifu Chat Server.
+
+This module provides a comprehensive configuration system using Pydantic BaseSettings
+with support for multiple configuration sources and priority-based loading:
+
+Configuration Sources (in order of priority):
+1. Environment variables
+2. .env file
+3. Dotfiles in user home directory (~/.model-*, ~/.api-*)
+4. Default values
+
+Features:
+- Type-safe configuration with Pydantic validation
+- Environment variable and .env file support
+- Dotfile-based API key and model name resolution
+- Provider selection (OpenRouter/Gemini) with fallback logic
+- Model name resolution with multiple precedence levels
+- Frozen configuration to prevent runtime modifications
+"""
+
 import os
 from pathlib import Path
 

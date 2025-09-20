@@ -1,3 +1,27 @@
+"""
+Database layer for the MCP Waifu Chat Server.
+
+This module handles all database operations using SQLite with connection pooling
+and proper transaction management. It provides:
+
+Database Operations:
+- User management (create, check, delete, count, list)
+- Dialog storage and retrieval (get, update, reset)
+- Metadata tracking (timestamps, modification history)
+- Pagination support for large user lists
+
+Features:
+- Connection pooling with context managers
+- Automatic table creation and schema management
+- Comprehensive error handling and logging
+- Transaction rollback on failures
+- Efficient query optimization
+- Timestamp tracking for audit trails
+
+The database schema includes a single 'dialogs' table that stores user conversations
+with proper indexing for efficient lookups.
+"""
+
 import datetime
 import logging
 import sqlite3

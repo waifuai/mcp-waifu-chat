@@ -1,3 +1,21 @@
+"""
+API endpoint tests for the MCP Waifu Chat Server.
+
+This module contains tests for all the MCP tools and resources provided by the server:
+
+Test Categories:
+- Server status endpoints
+- User management tools (create, check, delete, count)
+- Dialog management tools (get, set, reset)
+- Chat functionality with AI integration
+- Error handling and edge cases
+- Request/response validation
+
+Note: Some tests are currently marked as non-functional due to FastMCP
+testing limitations and will need adaptation for proper mocking or
+integration testing approaches.
+"""
+
 import json
 from typing import Any
 

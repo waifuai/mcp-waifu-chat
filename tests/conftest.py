@@ -1,3 +1,22 @@
+"""
+Pytest configuration and fixtures for the MCP Waifu Chat Server tests.
+
+This module provides shared fixtures and configuration for the test suite:
+
+Fixtures:
+- database: Creates and tears down test SQLite database for each test function
+- client: Provides FastMCP test client with proper configuration
+
+Configuration:
+- Test database isolation with automatic cleanup
+- Proper fixture scoping for test independence
+- Environment setup for reproducible testing
+- Test client configuration for API testing
+
+These fixtures ensure that tests run in isolation with clean state and
+proper teardown to prevent test interference.
+"""
+
 import os
 import sqlite3
 
