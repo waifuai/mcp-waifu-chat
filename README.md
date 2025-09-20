@@ -64,7 +64,7 @@ OpenRouter (default):
 - Model resolution precedence:
   1) `OPENROUTER_MODEL_NAME`
   2) `~/.model-openrouter`
-  3) `openrouter/horizon-beta`
+  3) `deepseek/deepseek-chat-v3-0324:free`
 
 Gemini:
 - Preferred via environment variables: `GEMINI_API_KEY` or `GOOGLE_API_KEY`
@@ -153,7 +153,7 @@ Provider selection:
 - Config field `default_provider` (env: `DEFAULT_PROVIDER`) chooses "openrouter" or "gemini" (defaults to "openrouter").
 
 Model resolution precedence:
-- OpenRouter model name: `OPENROUTER_MODEL_NAME` env; else `~/.model-openrouter`; else `openrouter/horizon-beta`.
+- OpenRouter model name: `OPENROUTER_MODEL_NAME` env; else `~/.model-openrouter`; else `deepseek/deepseek-chat-v3-0324:free`.
 - Gemini model name: `GEMINI_MODEL_NAME` env; else `~/.model-gemini`; else `gemini-2.5-pro`.
 
 Credentials:

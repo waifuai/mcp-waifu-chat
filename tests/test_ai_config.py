@@ -37,24 +37,24 @@ def test_env_overrides_default_provider(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_openrouter_model_env_overrides(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("OPENROUTER_MODEL_NAME", "openrouter/horizon-beta-override")
+    monkeypatch.setenv("OPENROUTER_MODEL_NAME", "deepseek/deepseek-chat-v3-0324:free-override")
     cfg = Config.load()
-    assert cfg.openrouter_model_name == "openrouter/horizon-beta-override"
+    assert cfg.openrouter_model_name == "deepseek/deepseek-chat-v3-0324:free-override"
 
 
 def test_openrouter_model_dotfile_used_when_env_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     fake_home = tmp_path
-    _write(fake_home / ".model-openrouter", "openrouter/horizon-beta-file")
+    _write(fake_home / ".model-openrouter", "deepseek/deepseek-chat-v3-0324:free-file")
     monkeypatch.setenv("HOME", str(fake_home))
     # On Windows, Path.home() may use USERPROFILE
     monkeypatch.setenv("USERPROFILE", str(fake_home))
     cfg = Config.load()
-    assert cfg.openrouter_model_name == "openrouter/horizon-beta-file"
+    assert cfg.openrouter_model_name == "deepseek/deepseek-chat-v3-0324:free-file"
 
 
 def test_openrouter_model_default_when_no_env_or_file(monkeypatch: pytest.MonkeyPatch):
     cfg = Config.load()
-    assert cfg.openrouter_model_name == "openrouter/horizon-beta"
+    assert cfg.openrouter_model_name == "deepseek/deepseek-chat-v3-0324:free"
 
 
 def test_gemini_model_env_overrides(monkeypatch: pytest.MonkeyPatch):

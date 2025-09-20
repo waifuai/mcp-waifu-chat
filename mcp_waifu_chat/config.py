@@ -47,7 +47,7 @@ class Config(BaseSettings):
         description="The specific Gemini model to use (e.g., gemini-2.5-pro).",
     )
     openrouter_model_name: str = Field(
-        default="openrouter/horizon-beta",
+        default="deepseek/deepseek-chat-v3-0324:free",
         description="The specific OpenRouter model to use.",
     )
 
