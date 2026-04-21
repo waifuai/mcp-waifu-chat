@@ -7,14 +7,13 @@ with support for multiple configuration sources and priority-based loading:
 Configuration Sources (in order of priority):
 1. Environment variables
 2. .env file
-3. Dotfiles in user home directory (~/.model-*, ~/.api-*)
+3. Dotfiles in user home directory (~/.model-openrouter, ~/.api-openrouter)
 4. Default values
 
 Features:
 - Type-safe configuration with Pydantic validation
 - Environment variable and .env file support
 - Dotfile-based API key and model name resolution
-- Provider selection (OpenRouter/Gemini) with fallback logic
 - Model name resolution with multiple precedence levels
 - Frozen configuration to prevent runtime modifications
 """
@@ -59,16 +58,8 @@ class Config(BaseSettings):
     )
 
     # Provider and model settings
-    default_provider: str = Field(
-        default="openrouter",
-        description="Default provider to use: 'openrouter' or 'gemini'.",
-    )
-    gemini_model_name: str = Field(
-        default="gemini-2.5-pro",
-        description="The specific Gemini model to use (e.g., gemini-2.5-pro).",
-    )
     openrouter_model_name: str = Field(
-        default="deepseek/deepseek-chat-v3-0324:free",
+        default="openrouter/free",
         description="The specific OpenRouter model to use.",
     )
 
@@ -79,17 +70,12 @@ class Config(BaseSettings):
     def load(cls) -> "Config":
         """
         Loads the configuration from environment variables and/or a .env file,
-        then applies dotfile-based overrides for model names and provider precedence.
+        then applies dotfile-based overrides for model names.
         """
         cfg = cls()
 
-        # Resolve provider: DEFAULT_PROVIDER env overrides; else keep default 'openrouter'
-        env_provider = os.getenv("DEFAULT_PROVIDER")
-        if env_provider:
-            object.__setattr__(cfg, "default_provider", env_provider.strip())
-
         # Resolve model names with precedence:
-        # OpenRouter: OPENROUTER_MODEL_NAME > ~/.model-openrouter > default
+        # OPENROUTER_MODEL_NAME > ~/.model-openrouter > default
         openrouter_env = os.getenv("OPENROUTER_MODEL_NAME")
         if openrouter_env and openrouter_env.strip():
             object.__setattr__(cfg, "openrouter_model_name", openrouter_env.strip())
@@ -97,14 +83,5 @@ class Config(BaseSettings):
             or_file = _read_single_line_file(Path.home() / ".model-openrouter")
             if or_file:
                 object.__setattr__(cfg, "openrouter_model_name", or_file)
-
-        # Gemini: GEMINI_MODEL_NAME > ~/.model-gemini > default
-        gem_env = os.getenv("GEMINI_MODEL_NAME")
-        if gem_env and gem_env.strip():
-            object.__setattr__(cfg, "gemini_model_name", gem_env.strip())
-        else:
-            gm_file = _read_single_line_file(Path.home() / ".model-gemini")
-            if gm_file:
-                object.__setattr__(cfg, "gemini_model_name", gm_file)
 
         return cfg

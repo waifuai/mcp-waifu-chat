@@ -13,7 +13,6 @@ dependencies = [
   "gunicorn>=20.1",
   "anyio>=4.3",
   "mcp>=1.1.0",
-  "google-genai==1.28.0",
 ]
 
 [project.optional-dependencies]
