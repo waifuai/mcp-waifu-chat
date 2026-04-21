@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP Waifu Chat Server</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --card-bg: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --accent: #58a6ff;
+  --accent2: #7ee787;
+  --accent3: #d2a8ff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; }
+.container { max-width: 1100px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 3rem; padding: 2rem 0; border-bottom: 1px solid var(--border); }
+header h1 { font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem; }
+header p { color: var(--text-muted); font-size: 1.1rem; }
+section { margin-bottom: 2.5rem; }
+h2 { font-size: 1.4rem; margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; gap: 0.5rem; }
+.count { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+.section-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+.link-list { display: flex; flex-direction: column; gap: 0.25rem; }
+.link-list a { color: var(--accent); text-decoration: none; padding: 0.4rem 0.75rem; border-radius: 6px; transition: background 0.15s; font-size: 0.95rem; }
+.link-list a:hover { background: var(--card-bg); text-decoration: underline; }
+footer { text-align: center; color: var(--text-muted); font-size: 0.8rem; padding-top: 2rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>mcp-waifu-chat</h1>
+<p></p>
+</header>
+<section>
+<h2>Project Description</h2>
+<h1>MCP Waifu Chat Server</h1>
+<p>This project implements a basic MCP (Model Context Protocol) server for a conversational AI "waifu" character. It uses the <code>mcp</code> library for Python to handle the protocol details and <code>FastMCP</code> for easy server setup.</p>
+<h2>Features</h2>
+<ul>
+<li>User management (create, check existence, delete, count)</li>
+<li>Dialog history storage (get, set, reset)</li>
+<li>Basic chat functionality (using OpenRouter API)</li>
+<li>Modular design for easy extension</li>
+<li>Configuration via environment variables and API key file</li>
+<li>SQLite database for persistence</li>
+<li>Comprehensive unit tests</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li>Python 3.10+</li>
+<li><code>uv</code></li>
+<li>An OpenRouter API Key</li>
+</ul>
+<h2>Installation</h2>
+<ol>
+<li>
+<p>Clone the repository:</p>
+<p><code>bash
+git clone &lt;repository_url&gt;
+cd mcp-waifu-chat</code></p>
+</li>
+<li>
+<p>Install uv (if not installed)
+  With curl:
+   <code>bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh</code>
+  Or with powershell:
+  <code>powershell
+  powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></p>
+</li>
+<li>
+<p>Create the virtual environment and ensure tooling inside:</p>
+<p><code>bash
+python -m uv venv .venv
+.venv/Scripts/python.exe -m ensurepip
+.venv/Scripts/python.exe -m pip install uv</code></p>
+</li>
+<li>
+<p>Install dependencies:</p>
+<p><code>bash
+.venv/Scripts/python.exe -m uv pip install -e .[test]</code></p>
+</li>
+</ol>
+<h2>Configuration</h2>
+<p>The server uses a combination of a file for the API key and environment variables (or a <code>.env</code> file) for other configurations.</p>
+<p><strong>API Key:</strong></p>
+<p>OpenRouter (default):
+- Preferred via environment variable: <code>OPENROUTER_API_KEY</code>
+- Fallback: single-line key file <code>~/.api-openrouter</code>
+- Model resolution precedence:
+  1) <code>OPENROUTER_MODEL_NAME</code>
+  2) <code>~/.model-openrouter</code>
+  3) <code>openrouter/free</code></p>
+<p>You can obtain a key from <a href="https://openrouter.ai/">OpenRouter</a>.</p>
+<p><strong>Other Configuration (<code>.env</code> file or environment variables):</strong>
+An example <code>.env.example</code> file is provided for other settings:</p>
+<pre><code>DATABASE_FILE=dialogs.db
+DEFAULT_RESPONSE=&quot;I'm sorry, I'm having trouble connecting to the AI model.&quot;
+DEFAULT_GENRE=&quot;Fantasy&quot;
+FLASK_PORT=5000
+OPENROUTER_MODEL_NAME=openrouter/free
+</code></pre>
+<ul>
+<li><code>DATABASE_FILE</code>: Path to the SQLite database file (default: <code>dialogs.db</code>).</li>
+<li><code>DEFAULT_RESPONSE</code>: The default response to send when the AI model is unavailable (default: "The AI model is currently unavailable. Please try again later.").</li>
+<li><code>DEFAULT_GENRE</code>: The default conversation genre (default: "Romance").</li>
+<li><code>FLASK_PORT</code>: The port the server will listen on (default: 5000).</li>
+<li><code>OPENROUTER_MODEL_NAME</code>: The specific OpenRouter model to use (default: <code>openrouter/free</code>).</li>
+</ul>
+<p>Copy <code>.env.example</code> to <code>.env</code> and customize the values as needed (except for the API key, which is read from <code>~/.api-openrouter</code>).</p>
+<h2>Running the Server</h2>
+<p>Ensure your <code>~/.api-openrouter</code> file is set up correctly. Then, to run the server, use:</p>
+<pre><code class="language-bash">uv run mcp-waifu-chat
+</code></pre>
+<p>This runs the <code>mcp_waifu_chat/api.py</code> file (since that's where the <code>FastMCP</code> instance is defined) and starts up the server.</p>
+<h2>Running Tests</h2>
+<p>To run the unit tests:</p>
+<pre><code class="language-bash">uv run pytest
+</code></pre>
+<p>This will execute all tests in the <code>tests/</code> directory using <code>pytest</code>. The tests include database tests and API endpoint tests.</p>
+<h2>API Endpoints</h2>
+<p>The server provides the following MCP-compliant endpoints (using <code>FastMCP</code>'s automatic routing):</p>
+<h3>Server Status</h3>
+<ul>
+<li><code>/v1/server/status</code> (GET): Checks the server status. Returns <code>{"status": "ok"}</code>. This is a standard MCP endpoint.</li>
+</ul>
+<h3>User Management Tools</h3>
+<p>These are implemented as MCP <em>tools</em>.</p>
+<ul>
+<li><code>create_user</code> (user_id: str): Creates a new user.</li>
+<li><code>check_user</code> (user_id: str): Checks if a user exists. Returns <code>{"user_id": str, "exists": bool}</code>.</li>
+<li><code>delete_user</code> (user_id: str): Deletes a user.</li>
+<li><code>user_count</code>: returns the number of users in the database for the current user.</li>
+</ul>
+<h3>Dialog Management Tools</h3>
+<ul>
+<li><code>reset_dialog</code> (user_id: str)</li>
+</ul>
+<h3>Resources</h3>
+<ul>
+<li><code>/v1/user/dialog/json/{user_id}</code>: Dynamic resource to return dialogs as JSON.</li>
+<li><code>/v1/user/dialog/str/{user_id}</code>: Dynamic resource to return dialogs as a string</li>
+</ul>
+<h3>Chat Tool</h3>
+<ul>
+<li><code>chat</code> (message: str, user_id: str): Sends a chat message and gets a response generated by OpenRouter.</li>
+</ul>
+<h2>LLM Integration (OpenRouter)</h2>
+<p>The dispatcher in <a href="mcp_waifu_chat/ai.py:1"><code>mcp_waifu_chat/ai.py</code></a> selects the provider and generates responses.</p>
+<p>Provider: openrouter</p>
+<p>Model resolution precedence:
+- OpenRouter model name: <code>OPENROUTER_MODEL_NAME</code> env; else <code>~/.model-openrouter</code>; else <code>openrouter/free</code>.</p>
+<p>Credentials:
+- OpenRouter: <code>OPENROUTER_API_KEY</code> env; else <code>~/.api-openrouter</code>.</p>
+<p>Call pattern:
+- OpenRouter: HTTPS POST to https://openrouter.ai/api/v1/chat/completions with a single user message.</p>
+<p>The path includes defensive parsing and error handling, returning <code>config.default_response</code> when unavailable.</p>
+<h2>Deploying to Production</h2>
+<p>For a production deployment, you should:</p>
+<ol>
+<li>
+<p><strong>Use a production-ready WSGI/ASGI server:</strong> Gunicorn is recommended and included in the <code>pyproject.toml</code>. Example command:</p>
+<p><code>bash
+gunicorn --workers 4 --bind 0.0.0.0:8000 mcp_waifu_chat.api:app -k uvicorn.workers.UvicornWorker</code></p>
+<p>This runs the <code>app</code> object (our <code>FastMCP</code> instance) from <code>mcp_waifu_chat/api.py</code> using 4 Uvicorn workers managed by Gunicorn, listening on port 8000. Adjust the number of workers and the port as needed.</p>
+</li>
+<li>
+<p><strong>Use a robust database:</strong> Consider PostgreSQL or MySQL instead of SQLite for higher concurrency and scalability.</p>
+</li>
+<li>
+<p><strong>Implement proper logging:</strong> Configure logging to write to files, a centralized logging service, or a monitoring system.</p>
+</li>
+<li>
+<p><strong>Secure your server:</strong> Use HTTPS, implement authentication/authorization, and follow security best practices for web applications.</p>
+</li>
+<li>
+<p><strong>Consider a reverse proxy:</strong> Use a reverse proxy like Nginx or Apache to handle TLS termination, load balancing, and static file serving.</p>
+</li>
+<li>
+<p><strong>Containerize</strong> Use Docker to simplify deployment.</p>
+</li>
+</ol>
+<h2>Project Structure Explanation</h2>
+<ul>
+<li><strong><code>mcp_waifu_chat/</code> (Main Package):</strong><ul>
+<li><code>__init__.py</code>: Makes the directory a Python package.</li>
+<li><code>api.py</code>: The core FastMCP application, tool/resource definitions, and request handling logic.</li>
+<li><code>config.py</code>: Handles loading and validating configuration settings.</li>
+<li><code>db.py</code>: All database interaction logic (creating tables, querying, updating).</li>
+<li><code>models.py</code>: Pydantic models for request/response data validation and serialization.</li>
+<li><code>utils.py</code>: Helper functions, like <code>dialog_to_json</code> and <code>json_to_dialog</code>.</li>
+<li><code>ai.py</code>: This module is responsible for interacting with the OpenRouter API.</li>
+</ul>
+</li>
+<li><strong><code>tests/</code> (Test Suite):</strong><ul>
+<li><code>conftest.py</code>: pytest configuration, including fixtures for the test database and test client.</li>
+<li><code>test_db.py</code>: Unit tests for the <code>db.py</code> module.</li>
+<li><code>test_api.py</code>: Unit tests for the API endpoints in <code>api.py</code>.</li>
+</ul>
+</li>
+<li><strong><code>run.py</code>:</strong>: Simple file to run the server (Note: <code>uv run mcp-waifu-chat</code> is preferred).</li>
+</ul>
+<p>This structure promotes modularity, testability, and maintainability. Each module has a specific responsibility, making it easier to understand, modify, and extend the codebase.</p>
+</section>
+<section>
+<h2>Source Code</h2>
+<p class="section-desc">GitHub repository</p>
+<div class="link-list">
+<a href="https://github.com/waifuai/mcp-waifu-chat">https://github.com/waifuai/mcp-waifu-chat</a>
+</div>
+</section>
+<footer>
+<p>Generated for AI agent crawlability. Source: <a href="https://github.com/waifuai/mcp-waifu-chat">GitHub</a></p>
+</footer>
+</div>
+</body>
+</html>
