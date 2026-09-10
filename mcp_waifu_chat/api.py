@@ -17,8 +17,7 @@ a clean, extensible API for waifu character interactions.
 
 import logging
 
-from mcp.server.fastmcp import FastMCP
-from mcp.server.fastmcp import Context
+from mcp.server.mcpserver import MCPServer, Context
 # Remove Request import as it's not needed for tools
 # from starlette.requests import Request
 
@@ -26,7 +25,7 @@ from . import ai, config, db, models, utils
 from .config import Config
 
 # --- Configuration and Logging ---
-app = FastMCP(name="WaifuAPI")  # Use FastMCP!
+app = MCPServer(name="WaifuAPI")
 config = Config.load()
 
 logging.basicConfig(
